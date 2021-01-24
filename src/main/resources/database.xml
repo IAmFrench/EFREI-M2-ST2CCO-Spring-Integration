@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:int="http://www.springframework.org/schema/integration"
+	xmlns:int-jpa="http://www.springframework.org/schema/integration/jpa"
+    xmlns:int-jdbc="http://www.springframework.org/schema/integration/jdbc"
+    xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+	xsi:schemaLocation="http://www.springframework.org/schema/integration https://www.springframework.org/schema/integration/spring-integration-5.1.xsd
+		http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/integration/jpa https://www.springframework.org/schema/integration/jpa/spring-integration-jpa-5.1.xsd
+        http://www.springframework.org/schema/jdbc https://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+        http://www.springframework.org/schema/integration/jdbc https://www.springframework.org/schema/integration/jdbc/spring-integration-jdbc-5.1.xsd">
+
+
+    <jdbc:embedded-database id="datasource" type="H2">
+        <jdbc:script location="classpath:setup-tables.sql"/>
+    </jdbc:embedded-database>
+
+	<int:channel id="createPersonRequestChannel"/>
+
+
+	<int:gateway id="personService" service-interface="test.PersonService" default-request-channel="createPersonRequestChannel"/>
+
+    <int-jdbc:outbound-gateway data-source="datasource"
+                               request-channel="createPersonRequestChannel"
+                               reply-channel="createPersonReplyChannel"
+                               update="insert into Person (name)
+										values
+										(:name)"
+                               query="select * from Person where id = :id"
+                               request-sql-parameter-source-factory="requestSource"
+                               reply-sql-parameter-source-factory="replySource"
+                               row-mapper="personResultMapper"
+                               keys-generated="true"/>
+
+    <int:channel id="createPersonReplyChannel"/>
+
+    <bean id="personResultMapper" class="test.PersonMapper"/>
+
+    <bean id="replySource" class="org.springframework.integration.jdbc.ExpressionEvaluatingSqlParameterSourceFactory">
+        <property name="parameterExpressions">
+            <map>
+                <entry key="id" value="#this.ID"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="requestSource" class="org.springframework.integration.jdbc.ExpressionEvaluatingSqlParameterSourceFactory">
+        <property name="parameterExpressions">
+            <map>
+                <entry key="name" value="payload.name.toUpperCase()"/>
+            </map>
+        </property>
+    </bean>
+
+    <int:logging-channel-adapter id="createPersonReplyChannel" level="INFO"/>
+
+</beans>
+

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-http="http://www.springframework.org/schema/integration/http"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans https://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/integration https://www.springframework.org/schema/integration/spring-integration-5.1.xsd
+		http://www.springframework.org/schema/integration/http https://www.springframework.org/schema/integration/http/spring-integration-http-5.1.xsd">
+
+    <int:gateway id="gateWayService" service-interface="test.MyGateway" default-request-channel="requestChannel"/>
+
+    <int:channel id="requestChannel"/>
+
+    <int-http:outbound-gateway request-channel="requestChannel"
+    						reply-channel="responseChannel"
+                            url="http://localhost:8181/"
+                            http-method="PUT"
+                            expected-response-type="java.lang.String"/>
+
+                           
+    <int:logging-channel-adapter id="responseChannel" level="INFO"/>
+
+</beans>

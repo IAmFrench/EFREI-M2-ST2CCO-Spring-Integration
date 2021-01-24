@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-file="http://www.springframework.org/schema/integration/file"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/integration
+           http://www.springframework.org/schema/integration/spring-integration-5.1.xsd
+           http://www.springframework.org/schema/integration/file
+           http://www.springframework.org/schema/integration/file/spring-integration-file-5.1.xsd">
+
+    <int-file:inbound-channel-adapter 
+		channel="channelEntree" 
+    	directory="./dataIn"
+    	filename-pattern="account.txt">
+    		<int:poller id="poller" fixed-delay="1000" />
+    </int-file:inbound-channel-adapter>
+    
+    <int-file:file-to-string-transformer input-channel="channelEntree" output-channel="mainChannel"
+    delete-files="false" charset="UTF-8"/>
+    
+    <int:channel id="mainChannel"></int:channel>
+    
+    <int:service-activator input-channel="mainChannel" output-channel="fileOutput" ref="serviceID" method="create"/>
+    <bean id="serviceID" class="test.Account"/>
+    
+    <int:channel id="fileOutput"></int:channel>
+    
+    <int-file:outbound-channel-adapter id="filesOut" channel="fileOutput"
+    directory="./dataOut"/>
+    
+</beans>
+    

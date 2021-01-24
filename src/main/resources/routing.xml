@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:int="http://www.springframework.org/schema/integration"
+       xmlns:int-file="http://www.springframework.org/schema/integration/file"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/integration
+           http://www.springframework.org/schema/integration/spring-integration-5.1.xsd
+           http://www.springframework.org/schema/integration/file
+           http://www.springframework.org/schema/integration/file/spring-integration-file-5.1.xsd">
+
+    <int-file:inbound-channel-adapter 
+		channel="channelEntree" 
+    	directory="./dataIn"
+    	filename-pattern="account.json">
+    		<int:poller id="poller" fixed-delay="1000" />
+    </int-file:inbound-channel-adapter>
+    
+    <int:json-to-object-transformer input-channel="channelEntree" output-channel="mainChannel" type="test.MyAccount"></int:json-to-object-transformer>
+    
+    
+    <int:channel id="mainChannel"></int:channel>
+    
+    <int:recipient-list-router id="customRouter" input-channel="mainChannel">
+  		<int:recipient channel="serviceActivatorChannel"/>
+  		<int:recipient channel="channel2"/>
+	</int:recipient-list-router>
+    
+    <int:service-activator input-channel="serviceActivatorChannel" output-channel="objectTransformer1" ref="serviceID" method="myService"/>
+    <bean id="serviceID" class="test.AccountService"/>
+    
+    <int:channel id="objectTransformer1"></int:channel>
+    
+    <int:object-to-json-transformer id="t1" input-channel="objectTransformer1" output-channel="filesOut1"></int:object-to-json-transformer>
+
+    <int:channel id="filesOut1"></int:channel>
+
+    <int-file:outbound-channel-adapter id="f1" channel="filesOut1"
+    directory="./dataOut/test1"/>
+    
+    <int:channel id="channel2"></int:channel>
+    
+    <int:object-to-json-transformer id="t2" input-channel="channel2" output-channel="filesOut2"></int:object-to-json-transformer>
+
+    <int:channel id="filesOut2"></int:channel>
+
+    <int-file:outbound-channel-adapter id="f2" channel="filesOut2"
+    directory="./dataOut/test2"/>
+    
+    
+</beans>
+    
