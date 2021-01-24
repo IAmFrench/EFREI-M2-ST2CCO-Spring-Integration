@@ -24,6 +24,7 @@ public class MyAccount {
 	public void setAmount(int amount) {
 		this.amount = amount;
 	}
+
 	@Override
 	public String toString() {
 		return "MyAccount [name=" + name + ", number=" + number + ", amount=" + amount + "]";

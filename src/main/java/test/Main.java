@@ -4,6 +4,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.integration.config.EnableIntegration;
 
 @SpringBootApplication
 public class Main {
@@ -12,7 +13,8 @@ public class Main {
 
 		// ApplicationContext ctx = new ClassPathXmlApplicationContext("applicationContext.xml");
 		// ApplicationContext ctx = new ClassPathXmlApplicationContext("serviceActivator.xml");
-		 ApplicationContext ctx = new ClassPathXmlApplicationContext("routing.xml");
+		// ApplicationContext ctx = new ClassPathXmlApplicationContext("routing.xml");
+		ApplicationContext ctx = new ClassPathXmlApplicationContext("moviesApplication.xml");
 
 		/*
 		ApplicationContext ctx = new ClassPathXmlApplicationContext("javaScriptService.xml");

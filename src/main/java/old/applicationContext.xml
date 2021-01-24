@@ -9,7 +9,7 @@
            http://www.springframework.org/schema/integration/spring-integration-5.1.xsd
            http://www.springframework.org/schema/integration/file
            http://www.springframework.org/schema/integration/file/spring-integration-file-5.1.xsd">
-       
+
 
     <int-file:inbound-channel-adapter 
 		channel="channelEntree" 
