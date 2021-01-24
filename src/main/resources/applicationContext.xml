@@ -10,16 +10,15 @@
            http://www.springframework.org/schema/integration/file
            http://www.springframework.org/schema/integration/file/spring-integration-file-5.1.xsd">
        
-       
-    
+
     <int-file:inbound-channel-adapter 
 		channel="channelEntree" 
     	directory=".\dataIn"
     	filename-pattern="*.txt">
     		<int:poller id="poller" fixed-delay="1000" />
     </int-file:inbound-channel-adapter>
-    
-    <int:channel id="channelEntree"></int:channel>
+
+    <int:channel id="channelEntree"/>
     
     <int-file:outbound-channel-adapter id="filesOut" channel="channelEntree"
     directory=".\dataOut"
