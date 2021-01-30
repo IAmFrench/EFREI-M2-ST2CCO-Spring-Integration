@@ -5,6 +5,13 @@ ST2CCO - Advanced Cloud Computing - Spring Integration
 
 ![Application Diagram](./artefacts/ST2CCO-both-router.svg)
 
+## Application Description
+
+This application takes place for the final project of the course ST2CCO.
+We have choose to read some files ([`actors.csv`](./dataIn/actors.csv) and [`movies.csv`](./dataIn/movies.csv)) then load them into Java objects and finally convert them into JSON string and save it into jsons files.
+
+This application demonstrate our knowledge about the Spring pattern.
+
 ## Installation
 
 You can import the project using IntelliJ IDEA software (`File` -> `Open` and select the project folder).
@@ -39,6 +46,10 @@ Using IntelliJ IDEA, you can run the project using the `Run` menu (or press `Alt
 
 This Spring application will load the Schema-based configuration: [`movieApplication.xml`](./src/main/resources/moviesApplication.xml).
 This file will define the overall "pipeline" to use for the application messages flow.
+
+We have iterate from a single `actor` flow to two flows (`actors` and `movies`) and finally we have wrapped all of that inside a single Spring Application.
+
+Below is explained the iterative work for each flow.
 
 ### Actors flow
 
