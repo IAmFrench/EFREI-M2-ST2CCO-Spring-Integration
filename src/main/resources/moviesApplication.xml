@@ -4,7 +4,6 @@
        xmlns:int="http://www.springframework.org/schema/integration"
        xmlns:context="http://www.springframework.org/schema/context"
        xmlns:int-file="http://www.springframework.org/schema/integration/file"
-       xmlns:beans="http://www.springframework.org/schema/c"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
            http://www.springframework.org/schema/beans/spring-beans.xsd
            http://www.springframework.org/schema/integration
@@ -17,38 +16,28 @@
     <context:component-scan base-package="test"/>
 
     <int-file:inbound-channel-adapter
-            channel="IMovie"
+            channel="CsvInputChannel"
             directory="./dataIn"
-            filename-pattern="movies.csv">
+            filename-pattern="*.csv">
         <int:poller id="pollerMovie" fixed-delay="1000"/>
     </int-file:inbound-channel-adapter>
 
-    <int-file:splitter id="splitterMovie" apply-sequence="false" charset="UTF-8" first-line-as-header="true"
-                       input-channel="IMovie" output-channel="MovieChannel" auto-startup="true"/>
+    <int-file:splitter id="splitter" apply-sequence="false" charset="UTF-8" first-line-as-header="true"
+                       input-channel="CsvInputChannel" output-channel="AfterSplitterBeforeRouterChannel" auto-startup="true"/>
 
-    <int:transformer input-channel="MovieChannel" output-channel="OMovie" ref="mapToObject" method="mapMovie"/>
-    <int:channel id="OJsonMoviesChannel"/>
-    <int:object-to-json-transformer input-channel="OMovie" output-channel="OJsonMoviesChannel"/>
+    <int:channel id="AfterSplitterBeforeRouterChannel"/>
 
+    <int:header-value-router id="customRouter" input-channel="AfterSplitterBeforeRouterChannel" header-name="file_name" resolution-required="false">
+        <int:mapping value="movies.csv" channel="MovieChannel"/>
+        <int:mapping value="actors.csv" channel="ActorChannel"/>
+    </int:header-value-router>
 
-   <!-- <int-file:outbound-channel-adapter id="OJsonMovies" channel="OJsonMoviesChannel"  filename-generator="nameGenerator"
-                                       directory="./dataOut" append-new-line="true" /> -->
+    <int:transformer input-channel="MovieChannel" output-channel="OutputChannel" ref="mapToObject" method="mapMovie"/>
+    <int:transformer input-channel="ActorChannel" output-channel="OutputChannel" ref="mapToObject" method="mapActor" />
 
-
-    <int-file:inbound-channel-adapter
-            channel="IActor"
-            directory="./dataIn"
-            filename-pattern="actors.csv">
-        <int:poller id="pollerActor" fixed-delay="1000"/>
-    </int-file:inbound-channel-adapter>
-
-    <int-file:splitter id="splitterActor" apply-sequence="false" charset="UTF-8" first-line-as-header="true"
-                       input-channel="IActor" output-channel="ActorChannel" auto-startup="true"/>
-
-    <int:transformer input-channel="ActorChannel" output-channel="OActor" ref="mapToObject" method="mapActor" />
-    <int:channel id="OJsonActorsChannel"/>
-    <int:object-to-json-transformer input-channel="OActor" output-channel="OJsonActorsChannel"/>
-   <!-- <int-file:outbound-channel-adapter id="OJsonActors" channel="OJsonActorsChannel" filename-generator="nameGenerator"
-                                       directory="./dataOut" append-new-line="true" /> -->
+    <int:object-to-json-transformer input-channel="OutputChannel" output-channel="OJsonChannel"/>
+    <int:channel id="OJsonChannel"/>
+    <int-file:outbound-channel-adapter id="OJsonActors" channel="OJsonChannel" filename-generator="nameGenerator"
+                                       directory="./dataOut" append-new-line="true" />
 
 </beans>

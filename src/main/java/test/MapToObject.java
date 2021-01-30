@@ -5,15 +5,13 @@ import lombok.SneakyThrows;
 import org.springframework.stereotype.Component;
 
 import java.io.StringReader;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Component
 public class MapToObject {
 
     @SneakyThrows
     public Movie mapMovie(String o) {
-        System.out.println(o);
+        System.out.println("MAP MOVIE -----------------------------------------------------------------------------------------------------"+o);
 
         CSVReader reader = new CSVReader(new StringReader(o));
         String[] parts = reader.readNext();
@@ -29,7 +27,7 @@ public class MapToObject {
 
     @SneakyThrows
     public Actor mapActor(String o) {
-        System.out.println(o);
+        System.out.println("MAP ACTOR -----------------------------------------------------------------------------------------------------"+o);
 
         CSVReader reader = new CSVReader(new StringReader(o));
         String[] parts = reader.readNext();
