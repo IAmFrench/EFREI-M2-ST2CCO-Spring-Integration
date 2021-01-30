@@ -20,11 +20,11 @@ Using IntelliJ IDEA, you can run the project using the `Run` menu (or press `Alt
 - [`splitter`](https://docs.spring.io/spring-integration/reference/html/splitter.html#configuring-a-splitter-with-xml) - used to parse the message string into csv object
 ![splitter](./artefacts/splitter.png)
 
-- [`header-value-router`](https://docs.spring.io/spring-integration/reference/html/message-routing.html#router-implementations-headervaluerouter) - used to route message based on his source file name (eg. `actors.csv` or `movies.csv`)
+- [`header-value-router`](https://docs.spring.io/spring-integration/reference/html/message-routing.html#router-implementations-headervaluerouter) - used to route message based on his source file name (eg. [`actors.csv`](./dataIn/actors.csv) or [`movies.csv`](./dataIn/movies.csv))
 ![header-value-router](./artefacts/header-value-router.png)
 
 - [`transformer`](https://docs.spring.io/spring-integration/reference/html/transformer.html) - used to convert the message payload (a csv object) into a JAVA (`Actor` or `Movie`) object
-![splitter](./artefacts/splitter.png)
+![transformers](./artefacts/transformers.png)
 
 - [`object-to-json-transformer`](https://docs.spring.io/spring-integration/reference/html/transformer.html#json-transformers) - used to parse the JAVA (`Actor` or `Movie`) object into a JSON string
 ![object-to-json-transformer](./artefacts/object-to-json-transformer.png)
